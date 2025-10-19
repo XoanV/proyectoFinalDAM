@@ -6,25 +6,6 @@ git clone https://github.com/XoanV/proyectoFinalDAM.git
 
 DEPENDENCIAS (Se añaden en el pom.xml)
 
-<dependencies>
-     <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.6.0.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
-       </dependency>
-    </dependencies>
-
 - MySQLConector: Esta dependecia sirve para conectarse a la base de datos remotamente. Versión: 8.0.33.
 
 - Hibernate: Esta dependecia sirve para mapear objetos a tablas y para persistir los datos. Versión: 5.6.0.
