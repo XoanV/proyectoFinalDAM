@@ -16,7 +16,7 @@ BIBLIOTECAS
 
 - OpenCV: Esta librería sirve para procesar los frames.
 
-- MachineLearning: Esta dependecia sirve para reconocer los gestos.
+- MachineLearning: Sirve para reconocer los gestos.
 
 PROGRAMAS
 
