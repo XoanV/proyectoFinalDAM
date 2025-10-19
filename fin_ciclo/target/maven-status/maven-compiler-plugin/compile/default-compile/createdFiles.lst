@@ -1,3 +1,6 @@
-vista\personasMudas$1.class
 Fin_ciclo_base.class
-vista\personasMudas.class
+vista\PersonasMudas$2.class
+controlador\factory\HibernateUtil.class
+vista\PersonasMudas$1.class
+vista\PersonasMudas.class
+controlador\ControladorPersonasMudas.class
