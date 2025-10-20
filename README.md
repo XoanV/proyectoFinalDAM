@@ -22,7 +22,7 @@ PROGRAMAS
 
 - NetBeans: Este programa se utiliza para crear el código y ejecutarlo en la versión de prueba.
 
-INTALAR OPENCV EN NETBEANS
+INSTALAR OPENCV EN NETBEANS
 
 1. Descargamos OpenCV. (https://opencv.org/releases/)
 
