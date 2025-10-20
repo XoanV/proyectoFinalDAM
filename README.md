@@ -14,13 +14,23 @@ DEPENDENCIAS (Se añaden en el pom.xml)
 
 BIBLIOTECAS
 
-- OpenCV: Esta librería sirve para procesar los frames.
+- OpenCV: Esta librería sirve para procesar los frames y activar la cámara.
 
 - MachineLearning: Sirve para reconocer los gestos.
 
 PROGRAMAS
 
 - NetBeans: Este programa se utiliza para crear el código y ejecutarlo en la versión de prueba.
+
+INTALAR OPENCV EN NETBEANS
+
+1. Descargamos OpenCV. (https://opencv.org/releases/)
+
+2. Tenemos que modificar el pom añadiendo la dependencia de OpenCV.
+
+3. Luego tenemos que ir a las Propiedades del proyecto y a la sección Run.
+
+4. Por último, en VMOptions poner esto: -Djava.library.path="C:\\OpenCV\\build\\java\\x64".
 
 EJECUCIÓN
 
