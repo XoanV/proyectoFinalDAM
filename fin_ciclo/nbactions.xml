@@ -10,10 +10,10 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Djava.library.path="C:\\opencv\\build\\java\\x64"</exec.vmArgs>
+                <exec.vmArgs>-Djava.library.path="C:\opencv\build\java\x64" --module-path "C:\javafx-sdk-21.0.9\lib" --add-modules javafx.controls,javafx.fxml javafx.swing</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
-                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.mainClass>Fin_ciclo_base</exec.mainClass>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -27,10 +27,10 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Djava.library.path="C:\\opencv\\build\\java\\x64" -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.vmArgs>-Djava.library.path="C:\opencv\build\java\x64" --module-path "C:\javafx-sdk-21.0.9\lib" --add-modules javafx.controls,javafx.fxml javafx.swing -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
-                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.mainClass>Fin_ciclo_base</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -45,9 +45,9 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.1.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Djava.library.path="C:\\opencv\\build\\java\\x64"</exec.vmArgs>
+                <exec.vmArgs>-Djava.library.path="C:\opencv\build\java\x64" --module-path "C:\javafx-sdk-21.0.9\lib" --add-modules javafx.controls,javafx.fxml javafx.swing</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
-                <exec.mainClass>${packageClassName}</exec.mainClass>
+                <exec.mainClass>Fin_ciclo_base</exec.mainClass>
                 <exec.executable>java</exec.executable>
                 <exec.appArgs></exec.appArgs>
             </properties>

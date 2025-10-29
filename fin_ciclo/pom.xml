@@ -4,7 +4,7 @@
     <groupId>com.mycompany</groupId>
     <artifactId>fin_ciclo</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>   
+    <packaging>jar</packaging>  
    <dependencies>
      <dependency>
             <groupId>org.hibernate</groupId>
@@ -23,12 +23,27 @@
             <scope>provided</scope>
        </dependency>
        <dependency>
-            <groupId>org.opencv</groupId>
+            <groupId>org.openpnp</groupId>
             <artifactId>opencv</artifactId>
-            <version>4.8.0</version>
-            <scope>system</scope>
-            <systemPath>C:\\opencv\\build\\java\\opencv-480.jar</systemPath>
+            <version>4.5.1-2</version>
         </dependency>
+        <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>21.0.9</version>
+    </dependency>
+    <!-- JavaFX FXML -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>21.0.9</version>
+    </dependency>
+    <dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-swing</artifactId>
+    <version>21.0.9</version>
+    <classifier>win</classifier>
+</dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

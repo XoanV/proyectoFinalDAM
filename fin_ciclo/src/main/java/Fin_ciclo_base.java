@@ -1,5 +1,6 @@
 
-import controlador.ControladorPersonasMudas;
+import javafx.application.Application;
+import vista.PersonasMudas;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -12,6 +13,6 @@ import controlador.ControladorPersonasMudas;
 public class Fin_ciclo_base {
 
     public static void main(String[] args) {
-        ControladorPersonasMudas.iniciar();
+        Application.launch(PersonasMudas.class, args);
     }
 }
