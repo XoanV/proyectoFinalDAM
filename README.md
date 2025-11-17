@@ -1,10 +1,11 @@
 # proyectoFinalDAM
 
-CLONAR REPOSITORIO
+## **CLONAR REPOSITORIO**
 
 git clone https://github.com/XoanV/proyectoFinalDAM.git
 
-DEPENDENCIAS (Se añaden en el pom.xml)
+## **DEPENDENCIAS** 
+(Se añaden en el pom.xml)
 
 - MySQLConector: Esta dependecia sirve para conectarse a la base de datos remotamente. Versión: 8.0.33.
 
@@ -12,25 +13,41 @@ DEPENDENCIAS (Se añaden en el pom.xml)
 
 - Lombok: Esta dependecia sirve para evitar la repetición de código. (Suprime los get y los set de las clases) Versión: 1.18.30.
 
-BIBLIOTECAS
+- JavaFX: Esta dependencia sirve para aplicar hojas de estilos a java. Versión: 21.0.9.
+
+## **BIBLIOTECAS**
 
 - OpenCV: Esta librería sirve para procesar los frames y activar la cámara.
 
 - MachineLearning: Sirve para reconocer los gestos.
 
-PROGRAMAS
+## **PROGRAMAS**
 
-- NetBeans: Este programa se utiliza para crear el código y ejecutarlo en la versión de prueba.
+- NetBeans: Este programa se utiliza para crear el código y ejecutarlo en la versión de prueba. 
 
-INSTALAR OPENCV EN NETBEANS
+- MySQLWorkbench: Este programa se utiliza para crear y visualizar las tablas de nuestra base de datos.
+
+## **INSTALAR OPENCV EN NETBEANS**
 
 1. Descargamos OpenCV. (https://opencv.org/releases/)
 
 2. Tenemos que modificar el pom añadiendo la dependencia de OpenCV.
 
-3. Luego tenemos que ir a las Propiedades del proyecto y a la sección Run.
+3. Luego tenemos que ir a las Propiedades del proyecto y a la sección *Run*.
 
-4. Por último, en VMOptions poner esto: -Djava.library.path="C:\\OpenCV\\build\\java\\x64".
+4. Por último, en VMOptions poner esto: **-Djava.library.path="C:\\OpenCV\\build\\java\\x64"**.
+
+## **JAVAFX EN NETBEANS**
+
+Para poder personalizar nuestra ventana a través de una hoja de estilos hay que:
+
+1. Descargar javaFX. (https://gluonhq.com/products/javafx/)
+
+2. Agregar las dependencias correctas en el pom.xml.
+
+3. Luego tenemos que ir a las Propiedades del proyecto y a la sección *Run*.
+
+4. Por último, en VMOptions poner esto: **--module-path "C:\javafx-sdk-21.0.9\lib" --add-modules javafx.controls,javafx.fxml javafx.swing**.
 
 EJECUCIÓN
 
