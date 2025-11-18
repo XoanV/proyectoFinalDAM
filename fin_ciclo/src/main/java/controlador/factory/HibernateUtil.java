@@ -1,5 +1,6 @@
 package controlador.factory;
 
+import modelo.dao.GestoDAO;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,5 +46,9 @@ public class HibernateUtil {
         if (s.getTransaction().isActive()) {
             s.getTransaction().rollback();
         }
+    }
+    
+    public static GestoDAO getGestoDAO() {
+        return new GestoDAO();
     }
 }

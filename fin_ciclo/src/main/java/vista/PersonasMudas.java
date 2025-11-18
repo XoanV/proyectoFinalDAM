@@ -12,6 +12,8 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 
 import controlador.ControladorPersonasMudas;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PersonasMudas extends Application {
 
@@ -30,19 +32,22 @@ public class PersonasMudas extends Application {
         root.setPadding(new Insets(20));
 
         Scene scene = new Scene(root, 700, 400);
+        
+        scene.getStylesheets().add(getClass().getResource("/css/EstiloVentana.css").toExternalForm());
+
         stage.setTitle("Personas Mudas");
         stage.setScene(scene);
-        stage.show();
-
-        // Iniciar cámara
-        ControladorPersonasMudas camara = new ControladorPersonasMudas(imageView);
-        camara.start();
+        stage.show();        
+                
+        ControladorPersonasMudas.iniciarSession();
+        ControladorPersonasMudas pers = new ControladorPersonasMudas(imageView, lblMensaje);
+        pers.start();
         
-        // Detener hilo cuando se cierre la ventana
-stage.setOnCloseRequest(e -> {
-    camara.detener();  // Detiene el hilo de la cámara
-});
-
-        btnReinicio.setOnAction(e -> camara.reiniciar());
+        stage.setOnCloseRequest(e -> {
+               pers.detener();
+            ControladorPersonasMudas.cerrarSession();
+        });
+        
+        btnReinicio.setOnAction(e -> pers.reiniciar());  
     }
 }

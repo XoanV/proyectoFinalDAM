@@ -6,21 +6,27 @@
  * Author:  Xoan Veiga
  * Created: 28 oct 2025
  */
+drop database if exists PersonasMudas;
+CREATE DATABASE PersonasMudas;
 
-CREATE DATABASE IF NOT EXISTS PersonasMudas;
+USE PersonasMudas;
 
 CREATE TABLE gestos (
-ID CHAR(2) PRIMARY KEY,
-Imagen VARCHAR(100) NOT NULL,
+ID INT AUTO_INCREMENT PRIMARY KEY,
+Imagen LONGBLOB NOT NULL,
 Significado VARCHAR(40) NOT NULL 
-)
+);
 
 CREATE TABLE gestosPersonas (
-ID CHAR(2) PRIMARY KEY,
-ImagenPersona VARCHAR(100) NOT NULL,
+ID INT AUTO_INCREMENT PRIMARY KEY,
+ImagenPersona LONGBLOB NOT NULL,
 Fecha DATE NOT NULL,
 Hora TIME NOT NULL,
-GestoPersona CHAR(2) NOT NULL,
-FOREIGN KEY (GestoPersona) REFERENCES gestos(ID)
-)
-
+ID_Gesto INT NOT NULL,
+FOREIGN KEY (ID_Gesto) REFERENCES gestos(ID)
+);
+ 
+INSERT INTO gestos VALUES 
+(1, LOAD_FILE( 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\adios.JPG'), "Adiós"), /*Hay que poner en esta ruta las imágenes para que la base datos pueda insertarlas*/
+(2, LOAD_FILE( 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\noches.JPG'), "Buenas noches"),
+(3, LOAD_FILE( 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\saludo.JPG'), "Hola");
