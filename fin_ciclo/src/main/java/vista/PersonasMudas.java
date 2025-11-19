@@ -12,8 +12,6 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 
 import controlador.ControladorPersonasMudas;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class PersonasMudas extends Application {
 
@@ -44,10 +42,10 @@ public class PersonasMudas extends Application {
         pers.start();
         
         stage.setOnCloseRequest(e -> {
-               pers.detener();
+            pers.detener();
             ControladorPersonasMudas.cerrarSession();
         });
         
-        btnReinicio.setOnAction(e -> pers.reiniciar());  
+       btnReinicio.setOnAction(e -> pers.reiniciar());  
     }
 }

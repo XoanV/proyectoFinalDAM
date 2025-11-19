@@ -1,6 +1,10 @@
 package controlador;
 
 import controlador.factory.HibernateUtil;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +16,7 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.PixelFormat;
 import modelo.dao.GestoDAO;
 import modelo.vo.Gestos;
+import modelo.vo.GestosPersonas;
 import org.hibernate.Session;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -34,7 +39,12 @@ public class ControladorPersonasMudas extends Thread {
     private final String textoMensaje;
 
     private Mat frameAnterior = null;
-    private final Map<String, Mat> signos = new HashMap<>();
+    private final Map<Integer, Mat> signosBD = new HashMap<>();
+    private final Map<Integer, String> significados = new HashMap<>();
+
+    private boolean gestodetectado = false;
+    private int idSignoActual = -1;
+    private int framesSinMovimiento = 0;
 
     static {
         System.load("C:\\opencv\\build\\java\\x64\\opencv_java451.dll");
@@ -57,17 +67,18 @@ public class ControladorPersonasMudas extends Thread {
     }
 
     public void cargarSignosDesdeBD() {
-        signos.clear();
+        signosBD.clear();
+        significados.clear();
         try {
             session.beginTransaction();
             List<Gestos> lista = gDAO.listarGestos(session);
 
             for (Gestos g : lista) {
                 byte[] data = g.getImagen();
-                String significado = g.getSignificado();
                 Mat mat = Imgcodecs.imdecode(new MatOfByte(data), Imgcodecs.IMREAD_GRAYSCALE);
                 Imgproc.resize(mat, mat, new Size(100, 100));
-                signos.put(significado, mat);
+                signosBD.put(g.getId(), mat);
+                significados.put(g.getId(), g.getSignificado());
             }
 
             session.getTransaction().commit();
@@ -95,11 +106,7 @@ public class ControladorPersonasMudas extends Thread {
             }
             frame.release();
 
-            try {
-                Thread.sleep(33);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            try { Thread.sleep(33); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         }
 
         if (camara != null && camara.isOpened()) camara.release();
@@ -120,59 +127,83 @@ public class ControladorPersonasMudas extends Thread {
 
         Mat diff = new Mat();
         Core.absdiff(frameAnterior, gray, diff);
-        Imgproc.threshold(diff, diff, 25, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(diff, diff, 20, 255, Imgproc.THRESH_BINARY);
         double movimiento = Core.sumElems(diff).val[0];
 
         if (movimiento > 500000) {
-            Platform.runLater(() -> lblMensaje.setText("Analizando gesto..."));
+            framesSinMovimiento = 0;
 
-            Mat reducido = new Mat();
-            Imgproc.resize(gray, reducido, new Size(100, 100));
-            String signo = detectarSigno(reducido);
+            if (!gestodetectado) {
+                gestodetectado = true;
+                Platform.runLater(() -> lblMensaje.setText("Analizando..."));
 
-            if (signo != null) {
-                Platform.runLater(() -> lblMensaje.setText("Signo detectado: " + signo));
-            } else {
-                Platform.runLater(() -> lblMensaje.setText("No se reconoce el gesto"));
-                reiniciar();
+                Mat reducido = new Mat();
+                Imgproc.resize(gray, reducido, new Size(100, 100));
+                idSignoActual = detectarSigno(reducido);
+                reducido.release();
             }
 
-            reducido.release();
+            if (gestodetectado && idSignoActual != -1) {
+                guardarGestoPersona(frame, idSignoActual);
+                String significado = significados.get(idSignoActual);
+                Platform.runLater(() -> lblMensaje.setText("Signo detectado: " + significado + " (ID: " + idSignoActual + ")"));
+            }
+
+        } else {
+            framesSinMovimiento++;
+            if (framesSinMovimiento > 10 && gestodetectado) {
+                gestodetectado = false;
+                idSignoActual = -1;
+            }
         }
 
         frameAnterior.release();
         frameAnterior = gray.clone();
-
         diff.release();
         gray.release();
     }
 
-    public String detectarSigno(Mat grayFrame) {
-        Mat img = new Mat();
-        Imgproc.resize(grayFrame, img, new Size(100, 100));
-
+    private int detectarSigno(Mat frameReducido) {
         double mejorError = Double.MAX_VALUE;
-        String mejorSigno = null;
+        int mejorId = -1;
 
-        for (Map.Entry<String, Mat> entry : signos.entrySet()) {
-            Mat imgBD = entry.getValue();
-
-            if (!img.size().equals(imgBD.size())) continue;
+        for (Map.Entry<Integer, Mat> entry : signosBD.entrySet()) {
+            Mat matBD = entry.getValue();
+            if (!frameReducido.size().equals(matBD.size())) continue;
 
             Mat diff = new Mat();
-            Core.absdiff(img, imgBD, diff);
+            Core.absdiff(frameReducido, matBD, diff);
             double error = Core.sumElems(diff).val[0];
-
             if (error < mejorError) {
                 mejorError = error;
-                mejorSigno = entry.getKey();
+                mejorId = entry.getKey();
             }
-
             diff.release();
         }
 
-        img.release();
-        return (mejorError < 900000) ? mejorSigno : null;
+        return (mejorError < 900000) ? mejorId : -1;
+    }
+
+    private void guardarGestoPersona(Mat frame, int idGesto) {
+        try {
+            String nombreArchivo = "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\frame_" + idGesto + "_" + System.currentTimeMillis() + ".jpg";
+            Imgcodecs.imwrite(nombreArchivo, frame);
+
+            session.beginTransaction();
+            GestosPersonas gp = new GestosPersonas();
+            gp.setImagenPersona(frameToBytes(frame));
+            session.save(gp);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] frameToBytes(Mat frame) throws IOException {
+        MatOfByte mob = new MatOfByte();
+        Imgcodecs.imencode(".jpg", frame, mob);
+        return mob.toArray();
     }
 
     private void mostrarFrame(Mat frame) {
@@ -195,13 +226,10 @@ public class ControladorPersonasMudas extends Thread {
         rgb.release();
     }
 
-    public void detener() {
-        ejecutando = false;
-    }
+    public void detener() { ejecutando = false; }
 
     public ControladorPersonasMudas reiniciar() {
         detener();
-        if (camara != null && camara.isOpened()) camara.release();
 
         try {
             this.join();
@@ -211,20 +239,9 @@ public class ControladorPersonasMudas extends Thread {
 
         Platform.runLater(() -> lblMensaje.setText(textoMensaje));
 
-        try {
-            session.beginTransaction();
-            gDAO.borrar(session);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-            e.printStackTrace();
-        } finally {
-            HibernateUtil.commitTx(session);
-        }
-
         ControladorPersonasMudas nuevo = new ControladorPersonasMudas(imageView, lblMensaje);
-        nuevo.cargarSignosDesdeBD();
         nuevo.start();
+
         return nuevo;
     }
 }
