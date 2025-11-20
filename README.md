@@ -49,8 +49,8 @@ Para poder personalizar nuestra ventana a través de una hoja de estilos hay que
 
 4. Por último, en VMOptions poner esto: **--module-path "C:\javafx-sdk-21.0.9\lib" --add-modules javafx.controls,javafx.fxml javafx.swing**.
 
-EJECUCIÓN
+## **DESPLIEGUE DEL PROYECTO**
 
-Los pasos para su ejecución son los siguientes:
+Los pasos para desplegar el proyecto son los siguientes:
 
 1. 
