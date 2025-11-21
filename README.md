@@ -21,6 +21,10 @@ git clone https://github.com/XoanV/proyectoFinalDAM.git
 
 - MachineLearning: Sirve para reconocer los gestos.
 
+##**PLUGINS**
+
+- Maven-jar-plugin: Este plugin, permite ejecutar los .jar.
+
 ## **PROGRAMAS**
 
 - NetBeans: Este programa se utiliza para crear el código y ejecutarlo en la versión de prueba. 
