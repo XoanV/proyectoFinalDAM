@@ -21,9 +21,11 @@ git clone https://github.com/XoanV/proyectoFinalDAM.git
 
 - MachineLearning: Sirve para reconocer los gestos.
 
-##**PLUGINS**
+## **PLUGINS**
 
-- Maven-jar-plugin: Este plugin, permite ejecutar los .jar.
+- Maven-jar-plugin: Este plugin, permite ejecutar los .jar. Versión: 3.2.2.
+
+- Openjfx. Versión: 0.0.8.
 
 ## **PROGRAMAS**
 
@@ -57,12 +59,10 @@ Para poder personalizar nuestra ventana a través de una hoja de estilos hay que
 
 Los pasos para desplegar el proyecto son los siguientes:
 
-1. Primero, con el botón derecho, hacemos clic en nuestro proyecto, y vamos a **Properties > Run > y elegimos nuestra clase main**. 
+1. Primero, es localizar el **pom.xml** en nuestra carpeta del proyecto.
 
-2. Luego, con el botón derecho, hacemos clic en nuestro proyecto y le damos a la opción **Clean and build**.
+2.  Una vez localizado, nos vamos al Símbolo del sistema (cmd) y vamos a la ruta donde esta el pom.
 
-3.  Lo siguiente que hacemos, es localizar el **.jar** en nuestra carpeta del proyecto.
+3.  Abierto el cmd, hay que ejecutar **mvn clean** y **mvn install -U** para que limpie y recompile el proyecto.
 
-4.  Una vez localizado, nos vamos al Símbolo del sistema (cmd) y vamos a la ruta donde esta el jar.
-
-5.  Por último, ejecutamos el comando **java -jar elnombredenuestroproyecto.jar**.
+4.  Por último, ejecutamos el comando **mvn javafx:run**.
