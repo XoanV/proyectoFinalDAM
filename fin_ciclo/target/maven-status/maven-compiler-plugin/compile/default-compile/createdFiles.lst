@@ -3,7 +3,5 @@ modelo\dao\GestoDAO.class
 Fin_ciclo_base.class
 modelo\vo\Gestos.class
 modelo\vo\GestosPersonas.class
-modelo\vo\Gestos_.class
 vista\PersonasMudas.class
-modelo\vo\GestosPersonas_.class
 controlador\ControladorPersonasMudas.class

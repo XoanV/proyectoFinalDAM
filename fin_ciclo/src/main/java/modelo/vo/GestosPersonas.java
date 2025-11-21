@@ -5,6 +5,7 @@
 package modelo.vo;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -40,12 +41,11 @@ public class GestosPersonas implements Serializable {
     private byte[] imagenPersona;
     @Basic(optional = false)
     @Column(name = "Fecha")
-    @Temporal(TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date fecha;
     @Basic(optional = false)
     @Column(name = "Hora")
-    @Temporal(TemporalType.TIME)
-    private Date hora;
+    private Time hora;
     @JoinColumn(name = "ID_Gesto", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Gestos iDGesto;
@@ -53,15 +53,11 @@ public class GestosPersonas implements Serializable {
     public GestosPersonas() {
     }
 
-    public GestosPersonas(Integer id) {
-        this.id = id;
-    }
-
-    public GestosPersonas(Integer id, byte[] imagenPersona, Date fecha, Date hora) {
-        this.id = id;
+    public GestosPersonas(byte[] imagenPersona, Date fecha, Time hora, Gestos iDGesto) {
         this.imagenPersona = imagenPersona;
         this.fecha = fecha;
         this.hora = hora;
+        this.iDGesto = iDGesto;
     }
 
     public Integer getId() {
@@ -88,11 +84,11 @@ public class GestosPersonas implements Serializable {
         this.fecha = fecha;
     }
 
-    public Date getHora() {
+    public Time getHora() {
         return hora;
     }
 
-    public void setHora(Date hora) {
+    public void setHora(Time hora) {
         this.hora = hora;
     }
 

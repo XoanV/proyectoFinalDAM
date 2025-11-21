@@ -4,8 +4,11 @@
  */
 package modelo.dao;
 
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 import modelo.vo.Gestos;
+import modelo.vo.GestosPersonas;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -24,5 +27,14 @@ public class GestoDAO {
        List<Gestos> img = q.list();
        
        return img;
+    }
+
+    public void insertar(Session session, byte[] gesto, Date fecha, Time hora, Gestos idGestoImagen) {
+        GestosPersonas gp = new GestosPersonas(gesto, fecha, hora, idGestoImagen);
+        session.save(gp);
+    }
+
+    public Gestos obtenerId(Session session, int idActual) {
+       return session.get(Gestos.class, idActual);
     }
 }
