@@ -53,4 +53,12 @@ Para poder personalizar nuestra ventana a través de una hoja de estilos hay que
 
 Los pasos para desplegar el proyecto son los siguientes:
 
-1. 
+1. Primero, con el botón derecho, hacemos clic en nuestro proyecto, y vamos a **Properties > Run > y elegimos nuestra clase main**. 
+
+2. Luego, con el botón derecho, hacemos clic en nuestro proyecto y le damos a la opción **Clean and build**.
+
+3.  Lo siguiente que hacemos, es localizar el **.jar** en nuestra carpeta del proyecto.
+
+4.  Una vez localizado, nos vamos al Símbolo del sistema (cmd) y vamos a la ruta donde esta el jar.
+
+5.  Por último, ejecutamos el comando **java -jar elnombredenuestroproyecto.jar**.
