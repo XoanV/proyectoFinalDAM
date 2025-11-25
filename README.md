@@ -15,12 +15,16 @@ git clone https://github.com/XoanV/proyectoFinalDAM.git
 
 - JavaFX: Esta dependencia sirve para aplicar hojas de estilos a java. Versión: 21.0.9.
 
+- TensorFlow: Esta dependencia sirve para reconocer gestos. Versión: 0.5.0.
+
 ## **BIBLIOTECAS**
 
 - OpenCV: Esta librería sirve para procesar los frames y activar la cámara.
 
-- MachineLearning: Sirve para reconocer los gestos.
+## **TÉCNICAS USADAS**
 
+- MachineLearning: Sirve para entrenar al ordenador para que pueda reconocer gestos.
+  
 ## **PLUGINS**
 
 - Maven-jar-plugin: Este plugin, permite ejecutar los .jar. Versión: 3.2.2.
