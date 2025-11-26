@@ -1,7 +1,4 @@
-controlador\factory\HibernateUtil.class
-modelo\dao\GestoDAO.class
-Fin_ciclo_base.class
 modelo\vo\Gestos.class
 modelo\vo\GestosPersonas.class
-vista\PersonasMudas.class
-controlador\ControladorPersonasMudas.class
+controlador\factory\HibernateUtil.class
+modelo\dao\GestoDAO.class

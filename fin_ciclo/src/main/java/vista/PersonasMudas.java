@@ -1,4 +1,3 @@
-
 package vista;
 
 import javafx.application.Application;

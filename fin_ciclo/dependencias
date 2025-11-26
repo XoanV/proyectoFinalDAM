@@ -58,4 +58,10 @@ Estas dependencias se añaden en el pom.xml
             <artifactId>jakarta.persistence</artifactId>
             <version>2.2.3</version>
         </dependency>
+	<dependency>
+    <groupId>org.tensorflow</groupId>
+    <artifactId>tensorflow-core-platform</artifactId>
+    <version>0.5.0</version>
+</dependency>
+
     </dependencies>
