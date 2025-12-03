@@ -2,7 +2,8 @@ package controlador;
 
 import org.tensorflow.SavedModelBundle;
 import org.tensorflow.Session;
-import org.tensorflow.Tensor;
+import org.tensorflow.types.TFloat32;
+import org.tensorflow.ndarray.Shape;
 
 public class modeloGestos {
 
@@ -11,54 +12,46 @@ public class modeloGestos {
     private final String[] labels = {"Hola", "Adios", "Buenas_noches"};
 
     public modeloGestos(String modelPath) {
-        // Carga el SavedModel exportado desde Python
         model = SavedModelBundle.load(modelPath, "serve");
         session = model.session();
     }
 
     public int predecir(float[] keypoints) {
-        // TensorFlow 0.5.0 requiere un batch: float[1][n]
-        float[][] inputBatch = new float[1][keypoints.length];
-        inputBatch[0] = keypoints;
 
-        // Crear tensor de entrada
-        Tensor<Float> inputTensor = Tensor.create(inputBatch, Float.class);
+        try (TFloat32 input = TFloat32.tensorOf(Shape.of(1, keypoints.length))) {
+            for (int j = 0; j < keypoints.length; j++) {
+                input.setFloat(keypoints[j], 0, j);
+            }
 
-        // Ejecutar el modelo
-        Tensor<Float> outputTensor = session.runner()
-                .feed("serving_default_input_1:0", inputTensor)  // Ajusta según tu SavedModel
-                .fetch("StatefulPartitionedCall:0")            // Ajusta según tu SavedModel
-                .run()
-                .get(0)
-                .expect(Float.class);
+            try (TFloat32 output = (TFloat32) session.runner()
+                    .feed("serve_input_layer", input)
+                    .fetch("StatefulPartitionedCall")
+                    .run()
+                    .get(0)) {
 
-        // Copiar resultados
-        float[][] probs = new float[1][labels.length];
-        outputTensor.copyTo(probs);
-
-        // Encontrar índice con mayor probabilidad
-        int maxIdx = 0;
-        float maxVal = probs[0][0];
-        for (int i = 1; i < labels.length; i++) {
-            if (probs[0][i] > maxVal) {
-                maxVal = probs[0][i];
-                maxIdx = i;
+                float max = -1;
+                int index = -1;
+                for (int i = 0; i < labels.length; i++) {
+                    float v = output.getFloat(0, i);
+                    if (v > max) {
+                        max = v;
+                        index = i;
+                    }
+                }
+                return index;
             }
         }
-
-        inputTensor.close();
-        outputTensor.close();
-
-        return maxIdx;
     }
 
     public String getLabel(int id) {
         return labels[id];
     }
 
-    // Método dummy de extracción de keypoints (rellénalo con tu lógica real)
     public float[] extraerKeypoints(org.opencv.core.Mat frame) {
-        return new float[50]; // ejemplo, reemplaza con tus keypoints reales
+        return new float[30];
+    }
+
+    public void cerrarModelo() {
+        if (model != null) model.close();
     }
 }
-

@@ -2,7 +2,7 @@ import keras
 
 keras_path = r"C:\Users\veiga\Desktop\Proyecto\proyectoFinalDAM\fin_ciclo\modelo\modelo_gesto\modelo_signo.keras"
 
-export_path = "modelo/modelo_gesto/"
+export_path = "modelo/"
 
 print("Cargando modelo .keras...")
 model = keras.models.load_model(keras_path)
