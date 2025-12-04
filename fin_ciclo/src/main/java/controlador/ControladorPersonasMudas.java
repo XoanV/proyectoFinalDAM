@@ -70,29 +70,31 @@ public class ControladorPersonasMudas extends Thread {
     @Override
     public void run() {
         ejecutando = true;
-
         camara = new VideoCapture(0);
-        if (!camara.isOpened()) {
-            Platform.runLater(() -> lblMensaje.setText("No se pudo abrir la cámara."));
-            return;
-        }
+    if (!camara.isOpened()) {
+        Platform.runLater(() -> lblMensaje.setText("No se pudo abrir la cámara."));
+        return;
+    }
 
-        try {
-            while (ejecutando) {
-                Mat frame = new Mat();
+    try {
+        while (ejecutando && camara.isOpened()) {
+            Mat frame = new Mat();
+            try {
                 if (camara.read(frame)) {
                     procesarFrame(frame);
                     mostrarFrame(frame);
                 }
+            } finally {
                 frame.release();
-                Thread.sleep(50);
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            liberarRecursos();
+            Thread.sleep(50);
         }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    } finally {
+        liberarRecursos();
     }
+}
 
     private void procesarFrame(Mat frame) {
         Mat gray = new Mat();
@@ -128,15 +130,14 @@ public class ControladorPersonasMudas extends Thread {
                             guardarGestoPersona(frame, g);
                             Platform.runLater(() -> lblMensaje.setText(" " + g.getSignificado()));
                         }
+                    } else {
+                        framesSinMovimiento++;
+                        if (framesSinMovimiento > 10 && gestoDetectado) {
+                            gestoDetectado = false;
+                            Platform.runLater(() -> lblMensaje.setText("Gesto incorrecto, por favor pulse el botón de reiniciar."));
+                        }
                     }
                 }
-            }
-
-        } else {
-            framesSinMovimiento++;
-            if (framesSinMovimiento > 10 && gestoDetectado) {
-                gestoDetectado = false;
-                Platform.runLater(() -> lblMensaje.setText("Gesto incorrecto, por favor pulse el botón de reiniciar."));
             }
         }
         frameAnterior.release();
@@ -164,7 +165,7 @@ public class ControladorPersonasMudas extends Thread {
         }
     }
 
-    private byte[] convertirFrameABytes(Mat frame) throws IOException {
+    private byte[] convertirFrameABytes(Mat frame) {
         MatOfByte mob = new MatOfByte();
         Imgcodecs.imencode(".jpg", frame, mob);
         return mob.toArray();
@@ -195,14 +196,16 @@ public class ControladorPersonasMudas extends Thread {
         try {
             this.join();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
             liberarRecursos();
         }
     }
 
     public ControladorPersonasMudas reiniciar() {
         detener();
-        Platform.runLater(() -> lblMensaje.setText(textoOriginal));      
-        
+        Platform.runLater(() -> lblMensaje.setText(textoOriginal));
+
         try {
             HibernateUtil.beginTx(session);
             gDAO.borrar(session);
@@ -211,9 +214,9 @@ public class ControladorPersonasMudas extends Thread {
             session.getTransaction().rollback();
             JOptionPane.showMessageDialog(null, "Error al borrar");
         } finally {
-            HibernateUtil.commitTx(session);            
+            HibernateUtil.commitTx(session);
         }
-        
+
         ControladorPersonasMudas hiloNuevo = new ControladorPersonasMudas(imageView, lblMensaje);
         hiloNuevo.start();
         return hiloNuevo;
