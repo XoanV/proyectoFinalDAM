@@ -41,7 +41,7 @@ git clone https://github.com/XoanV/proyectoFinalDAM.git
 
 1. Descargamos OpenCV. (https://opencv.org/releases/)
 
-2. Tenemos que modificar el pom añadiendo la dependencia de OpenCV.
+2. Tenemos que modificar el pom añadiendo la dependencia de OpenCV.(Ver el archivo de dependencias)
 
 3. Luego tenemos que ir a las Propiedades del proyecto y a la sección *Run*.
 
@@ -53,7 +53,7 @@ Para poder personalizar nuestra ventana a través de una hoja de estilos hay que
 
 1. Descargar javaFX. (https://gluonhq.com/products/javafx/)
 
-2. Agregar las dependencias correctas en el pom.xml.
+2. Agregar las dependencias correctas en el pom.xml. (Ver el archivo de dependencias)
 
 3. Luego tenemos que ir a las Propiedades del proyecto y a la sección *Run*.
 
