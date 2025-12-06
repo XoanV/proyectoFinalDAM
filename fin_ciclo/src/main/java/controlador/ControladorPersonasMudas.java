@@ -1,7 +1,6 @@
 package controlador;
 
 import controlador.factory.HibernateUtil;
-import java.io.IOException;
 import java.sql.Time;
 import java.util.Date;
 
@@ -131,11 +130,8 @@ public class ControladorPersonasMudas extends Thread {
                             Platform.runLater(() -> lblMensaje.setText(" " + g.getSignificado()));
                         }
                     } else {
-                        framesSinMovimiento++;
-                        if (framesSinMovimiento > 10 && gestoDetectado) {
                             gestoDetectado = false;
                             Platform.runLater(() -> lblMensaje.setText("Gesto incorrecto, por favor pulse el botón de reiniciar."));
-                        }
                     }
                 }
             }
