@@ -1,53 +1,56 @@
 import cv2
 import mediapipe as mp
-import json
-import random
-import os
+from pathlib import Path
 
-# Carpeta de salida
-os.makedirs("dataset", exist_ok=True)
-SALIDA = "dataset/todos_los_signos.jsonl"
+def create_data():
+    sign = input('Which sign would you like to add? -> ')
+    Path(f'dataset/{sign}').mkdir(parents=True, exist_ok=True)
 
-imagenes = [
-    ("./Signos/Saludo.JPG", "Hola"),
-    ("./Signos/adios.JPG", "Adios"),
-    ("./Signos/noches.JPG", "Buenas_noches")
-]
+    cap = cv2.VideoCapture(0)
+    hands = mp.solutions.hands.Hands(static_image_mode=True, max_num_hands=1)
+    i = 0
 
-mp_hands = mp.solutions.hands
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-def variar(lm):
-    return {
-        "x": min(max(lm.x + random.uniform(-0.02, 0.02), 0), 1),
-        "y": min(max(lm.y + random.uniform(-0.02, 0.02), 0), 1),
-        "z": lm.z
-    }
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = hands.process(rgb)
 
-with open(SALIDA, "w") as f:
-    for imagen_path, etiqueta in imagenes:
-        img = cv2.imread(imagen_path)
-        if img is None:
-            print(f"❌ No se encontró la imagen: {imagen_path}")
-            continue
+        if results.multi_hand_landmarks:
+            h, w, _ = frame.shape
+            landmarks = results.multi_hand_landmarks[0].landmark
 
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            x_min = int(min(l.x for l in landmarks) * w) - 20
+            x_max = int(max(l.x for l in landmarks) * w) + 20
+            y_min = int(min(l.y for l in landmarks) * h) - 20
+            y_max = int(max(l.y for l in landmarks) * h) + 20
 
-        with mp_hands.Hands(static_image_mode=True, max_num_hands=1) as hands:
-            results = hands.process(img_rgb)
-            if not results.multi_hand_landmarks:
-                print(f"❌ No se detectó mano en: {imagen_path}")
-                continue
+            # Limitar a los bordes
+            x_min = max(0, x_min)
+            y_min = max(0, y_min)
+            x_max = min(w, x_max)
+            y_max = min(h, y_max)
 
-            base = results.multi_hand_landmarks[0]
-            print(f"✔ Mano detectada en {imagen_path}")
+            hand_img = frame[y_min:y_max, x_min:x_max]
 
-            for i in range(100):
-                puntos = []
-                for lm in base.landmark:
-                    v = variar(lm)
-                    puntos.extend([v["x"], v["y"], v["z"]])
+            if hand_img.size > 0:
+                i += 1
+                cv2.imwrite(f'dataset/{sign}/{i}.png', hand_img)
 
-                linea = {"input": puntos, "output": etiqueta}
-                f.write(json.dumps(linea) + "\n")
+        cv2.imshow("frame", frame)
 
-print(f"Archivo generado: {SALIDA}")
+        # Mantener ventana activa
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+        # Parar tras 50 imágenes
+        if i > 50:
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    create_data()

@@ -1,45 +1,73 @@
-import json
-import numpy as np
 import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import layers, models
 import os
 
-DATASET_FILE = "dataset/todos_los_signos.jsonl"
-LABELS = ["Hola", "Adios", "Buenas_noches"]
-LABEL_TO_ID = {label: i for i, label in enumerate(LABELS)}
+# --------- CONFIGURACIÓN ----------
+DATASET_DIR = "dataset"
+IMG_SIZE = (224, 224)
+BATCH_SIZE = 32
+EPOCHS = 12
+# ----------------------------------
 
-def load_jsonl(path):
-    samples = []
-    labels = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            obj = json.loads(line)
-            keypoints = obj.get("input", [])
-            if keypoints:
-                samples.append(np.array(keypoints, dtype=np.float32))
-                labels.append(LABEL_TO_ID[obj["output"]])
-    return samples, labels
+# 1. DATASET: cargar imágenes
+datagen = ImageDataGenerator(
+    rescale=1/255.0,
+    validation_split=0.2,
+    rotation_range=10,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    zoom_range=0.1
+)
 
-all_vectors, all_labels = load_jsonl(DATASET_FILE)
-max_len = max(len(v) for v in all_vectors)
-all_vectors = np.array([np.pad(v, (0, max_len - len(v))) for v in all_vectors])
-all_labels = np.array(all_labels)
-all_vectors = all_vectors[:, np.newaxis, :]
+train = datagen.flow_from_directory(
+    DATASET_DIR,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="categorical",
+    subset="training"
+)
 
-model = tf.keras.Sequential([
-    tf.keras.layers.Input(shape=(all_vectors.shape[1], all_vectors.shape[2])),
-    tf.keras.layers.LSTM(128, return_sequences=False),
-    tf.keras.layers.Dense(64, activation="relu"),
-    tf.keras.layers.Dense(len(LABELS), activation="softmax")
+val = datagen.flow_from_directory(
+    DATASET_DIR,
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode="categorical",
+    subset="validation"
+)
+
+num_classes = len(train.class_indices)
+print("Clases detectadas:", train.class_indices)
+
+# 2. MODELO: MobileNetV2
+base_model = tf.keras.applications.MobileNetV2(
+    input_shape=IMG_SIZE + (3,),
+    include_top=False,
+    weights="imagenet"
+)
+base_model.trainable = False  # congelar capas base
+
+model = models.Sequential([
+    base_model,
+    layers.GlobalAveragePooling2D(),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.3),
+    layers.Dense(num_classes, activation='softmax')
 ])
 
 model.compile(
     optimizer="adam",
-    loss="sparse_categorical_crossentropy",
+    loss="categorical_crossentropy",
     metrics=["accuracy"]
 )
 
-model.fit(all_vectors, all_labels, epochs=20, batch_size=16, validation_split=0.2)
+# 3. ENTRENAR MODELO
+history = model.fit(
+    train,
+    validation_data=val,
+    epochs=EPOCHS
+)
 
-export_path = "modelo/modelo_gesto"
-os.makedirs(export_path, exist_ok=True)
-model.save(f"{export_path}/modelo_signo.keras")
+# 4. GUARDAR MODELO
+model.save("hand_sign_model.h5")
+print("Modelo guardado como hand_sign_model.h5")
